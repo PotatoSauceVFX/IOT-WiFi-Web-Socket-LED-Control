@@ -5,8 +5,8 @@ using System.Net.WebSockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using IOT_Testing.Services;
-using IOT_Testing.WebSocketManager;
+using IOTLedControlWebAPI.Services;
+using IOTLedControlWebAPI.WebSocketManager;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace IOT_Testing
+namespace IOTLedControlWebAPI
 {
     public class Startup
     {

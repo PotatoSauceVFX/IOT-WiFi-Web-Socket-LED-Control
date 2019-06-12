@@ -6,7 +6,7 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace IOT_Testing.WebSocketManager
+namespace IOTLedControlWebAPI.WebSocketManager
 {
     public class WebSocketConnectionManager
     {

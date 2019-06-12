@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using IOT_Testing.Models;
-using IOT_Testing.Services;
+using IOTLedControlWebAPI.Models;
+using IOTLedControlWebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace IOT_Testing.Controllers
+namespace IOTLedControlWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

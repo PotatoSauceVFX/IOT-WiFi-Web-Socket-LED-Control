@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace IOT_Testing.Controllers
+namespace IOTLedControlWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

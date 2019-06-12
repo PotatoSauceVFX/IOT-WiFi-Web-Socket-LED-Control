@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace IOT_Testing.WebSocketManager
+namespace IOTLedControlWebAPI.WebSocketManager
 {
     public static class WebSocketManagerExtensions
     {

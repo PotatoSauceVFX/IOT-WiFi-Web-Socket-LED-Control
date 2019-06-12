@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Real-Time Notifications</title>
+    <title>Real-Time LED Control</title>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"
             integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
             crossorigin="anonymous"></script>
@@ -13,12 +13,22 @@
 <body>
     <h1>This should be mapped to "/notifications"</h1>
     <input type="color" id="colorPicker" name="head" value="#e66465">
+    <input type="number" id="time" value="10" required min="0" max="1000" />
     <button id="sendButton">Send</button>
+
+    <hr />
+
+    <input type="range" min="0" max="255" value="0" id="R">
+    <input type="range" min="0" max="255" value="0" id="G">
+    <input type="range" min="0" max="255" value="0" id="B">
 
     <ul id="messages"></ul>
 
 
     <script language="javascript" type="text/javascript">
+        var Color = hexToRgb("#e66465");
+        Color.T = 10;
+
         var uri = "ws://" + window.location.host + "/notifications";
         function connect() {
             socket = new WebSocket(uri);
@@ -41,24 +51,40 @@
 
         var list = document.getElementById("messages");
         var button = document.getElementById("sendButton");
-        button.addEventListener("click", function () {
+        button.addEventListener("change", function () {
 
             var input = hexToRgb(document.getElementById("colorPicker").value);
 
             console.log(input);
             sendColor(input);
 
-            //input.value = "";
         });
-        function sendColor(rgbObj) {
-            console.log("Sending: " + rgbObj);
+
+        $("#R").on('input', (val) => {
+            Color.r = val.target.value;
+            sendColor();
+        });
+
+        $("#G").on('input', (val) => {
+            Color.g = val.target.value;
+            sendColor();
+        });
+        $("#B").on('input', (val) => {
+            Color.b = val.target.value;
+            sendColor();
+        });
+
+        function sendColor() {
+            console.log("Sending: " + Color);
+
+            Color.t = $("#time").val();
 
             $.ajax({
                 url: "http://" + window.location.host + "/api/led/send",
                 method: 'POST',
                 contentType: 'application/json',
                 dataType: 'json',
-                data: JSON.stringify(rgbObj)
+                data: JSON.stringify(Color)
             });
         }
         function appendItem(list, message) {

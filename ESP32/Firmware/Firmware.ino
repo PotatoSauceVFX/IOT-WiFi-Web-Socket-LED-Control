@@ -5,12 +5,14 @@
 #include <WiFi.h>
 #include <WebSocketClient.h>
 
+#define LED_DATA 13
+#define LED_COUNT 300
 
 bool ConnectToClient();
 
 char path[] = "/notifications";
-char host[] = "192.168.1.18";
-char websocketHost[] = "192.168.1.18:3000";
+char host[] = "192.168.137.1";
+char websocketHost[] = "192.168.137.1:3000";
 int port = 3000;
 
 struct config_t
@@ -27,8 +29,8 @@ struct config_t
 
 WebSocketClient webSocketClient;
 
-CRGB leds[1];
-CRGB target[1];
+CRGB leds[LED_COUNT];
+CRGB target[LED_COUNT];
 bool netLED = true;
 
 // Use WiFiClient class to create TCP connections
@@ -54,7 +56,7 @@ void setup() {
     Serial << "Resetting EEPROM to Defaults" << endl;
   }
 
-  FastLED.addLeds<WS2812B, 13, GRB>(leds, 1);
+  FastLED.addLeds<WS2812B, LED_DATA, GRB>(leds, LED_COUNT);
   leds[0].r = config.R;
   leds[0].g = config.G;
   leds[0].b = config.B;
@@ -109,60 +111,53 @@ void loop() {
 
       deserializeJson(doc, data);
 
-      target[0] = CRGB(doc["R"], doc["G"], doc["B"]);
-      config.R = doc["R"];
-      config.G = doc["G"];
-      config.B = doc["B"];
-      EEPROM_writeAnything(0, config);
-
-
-
+      int index = doc["I"];
+      target[index] = CRGB(doc["R"], doc["G"], doc["B"]);
       ledFadeDelay = doc["T"];
-
-
     }
   } else {
     Serial.println("Client disconnected.");
     while (!ConnectToClient()) {}
   }
 
-  if (target[0].r != leds[0].r || target[0].g != leds[0].g || target[0].b != leds[0].b) {
-
-    if (ledFadeDelay == 0)
-    {
-      leds[0] = target[0];
-      FastLED.show();
-    }
-    else
-    {
-      if (target[0].r != leds[0].r) {
-        if (target[0].r < leds[0].r) {
-          leds[0].r = leds[0].r - 1;
-        }
-        if (target[0].r > leds[0].r) {
-          leds[0].r = leds[0].r + 1;
-        }
+  for (int i = 0; i < LED_COUNT; i++) {
+    if (target[i].r != leds[i].r || target[i].g != leds[i].g || target[i].b != leds[i].b) {
+      if (ledFadeDelay == 0)
+      {
+        leds[i] = target[i];
+        FastLED.show();
       }
+      else
+      {
+        if (target[i].r != leds[i].r) {
+          if (target[i].r < leds[i].r) {
+            leds[i].r = leds[i].r - 1;
+          }
+          if (target[i].r > leds[i].r) {
+            leds[i].r = leds[i].r + 1;
+          }
+        }
 
-      if (target[0].g != leds[0].g) {
-        if (target[0].g < leds[0].g) {
-          leds[0].g = leds[0].g - 1;
+        if (target[i].g != leds[i].g) {
+          if (target[i].g < leds[i].g) {
+            leds[i].g = leds[i].g - 1;
+          }
+          if (target[i].g > leds[i].g) {
+            leds[i].g = leds[i].g + 1;
+          }
         }
-        if (target[0].g > leds[0].g) {
-          leds[0].g = leds[0].g + 1;
-        }
-      }
 
-      if (target[0].b != leds[0].b) {
-        if (target[0].b < leds[0].b) {
-          leds[0].b = leds[0].b - 1;
+        if (target[i].b != leds[i].b) {
+          if (target[i].b < leds[i].b) {
+            leds[i].b = leds[i].b - 1;
+          }
+          if (target[i].b > leds[i].b) {
+            leds[i].b = leds[i].b + 1;
+          }
         }
-        if (target[0].b > leds[0].b) {
-          leds[0].b = leds[0].b + 1;
-        }
+        FastLED.show();
+        delay(ledFadeDelay);
       }
-      FastLED.show();
-      delay(ledFadeDelay);
     }
   }
 }

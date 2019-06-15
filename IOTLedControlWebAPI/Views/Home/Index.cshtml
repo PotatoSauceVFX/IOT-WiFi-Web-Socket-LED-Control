@@ -3,28 +3,25 @@
 
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Real-Time LED Control</title>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
-            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-            crossorigin="anonymous"></script>
-
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 </head>
 
 <body>
-    <h1>This should be mapped to "/notifications"</h1>
-    <input type="color" id="colorPicker" name="head" value="#e66465">
-    <input type="number" id="time" value="10" required min="0" max="1000" />
+    <h1>LED Control</h1>
+    <input type="color" id="color" name="head" value="#e66465" />
+    <label for="time">Time ms Delay</label>
+    <input type="number" id="time" value="10" min="0" max="1000" />
+    <label for="index">LED Index</label>
+    <input type="number" id="index" value="0" min="0" max="300" />
     <button id="sendButton">Send</button>
 
     <hr />
 
-    <input type="range" min="0" max="255" value="0" id="R">
-    <input type="range" min="0" max="255" value="0" id="G">
-    <input type="range" min="0" max="255" value="0" id="B">
 
-    <ul id="messages"></ul>
-
-
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script language="javascript" type="text/javascript">
         var Color = hexToRgb("#e66465");
         Color.T = 10;
@@ -39,7 +36,6 @@
                 console.log("closed connection from " + uri);
             };
             socket.onmessage = function (event) {
-                appendItem(list, event.data);
                 console.log(event.data);
             };
             socket.onerror = function (event) {
@@ -49,35 +45,25 @@
         connect();
 
 
-        var list = document.getElementById("messages");
         var button = document.getElementById("sendButton");
-        button.addEventListener("change", function () {
+        button.addEventListener("click", function () {
 
-            var input = hexToRgb(document.getElementById("colorPicker").value);
+            var input = hexToRgb(document.getElementById("color").value);
 
-            console.log(input);
+            Color.r = input.r;
+            Color.g = input.g;
+            Color.b = input.b;
+
+            console.log("New color", input);
             sendColor(input);
 
-        });
-
-        $("#R").on('input', (val) => {
-            Color.r = val.target.value;
-            sendColor();
-        });
-
-        $("#G").on('input', (val) => {
-            Color.g = val.target.value;
-            sendColor();
-        });
-        $("#B").on('input', (val) => {
-            Color.b = val.target.value;
-            sendColor();
         });
 
         function sendColor() {
             console.log("Sending: " + Color);
 
             Color.t = $("#time").val();
+            Color.i = $("#index").val();
 
             $.ajax({
                 url: "http://" + window.location.host + "/api/led/send",
@@ -86,11 +72,6 @@
                 dataType: 'json',
                 data: JSON.stringify(Color)
             });
-        }
-        function appendItem(list, message) {
-            var item = document.createElement("li");
-            item.appendChild(document.createTextNode(message));
-            list.appendChild(item);
         }
 
         function hexToRgb(hex) {

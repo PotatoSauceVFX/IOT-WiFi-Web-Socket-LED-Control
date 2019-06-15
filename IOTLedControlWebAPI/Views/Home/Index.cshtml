@@ -9,15 +9,20 @@
 </head>
 
 <body>
-    <h1>LED Control</h1>
-    <input type="color" id="color" name="head" value="#e66465" />
-    <label for="time">Time ms Delay</label>
-    <input type="number" id="time" value="10" min="0" max="1000" />
-    <label for="index">LED Index</label>
-    <input type="number" id="index" value="0" min="0" max="300" />
-    <button id="sendButton">Send</button>
+    <main>
+        <div class="container d-flex justify-content-center text-center">
+            <h1>LED Control</h1>
+            <input type="color" id="color" name="head" value="#e66465" />
+            <label for="time">Time ms Delay</label>
+            <input type="number" id="time" value="10" min="0" max="1000" />
+            <label for="index">LED Index</label>
+            <input type="number" id="index" value="0" min="0" max="300" />
+            <button id="sendButton">Send</button>
 
-    <hr />
+            <hr />
+        </div>
+    </main>
+    
 
 
     <script src="~/lib/jquery/jquery.min.js"></script>
